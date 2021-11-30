@@ -15,9 +15,9 @@ from std_msgs.msg import Float32MultiArray
 now = datetime.datetime.now()  # Getting date and time
 pub = rospy.Publisher('/cmd_vel_mux/input/teleop', Twist, queue_size=1)
 
-controller_pub = rospy.Publisher(
-    '/controller_values', Float32MultiArray, queue_size=1)
-rospy.init_node('survilBot', anonymous=True)
+# controller_pub = rospy.Publisher(
+#     '/controller_values', Float32MultiArray, queue_size=1)
+# rospy.init_node('survilBot', anonymous=True)
 move_msg = Twist()
 click = TakePhoto()
 
@@ -44,7 +44,7 @@ def handle(msg):
         bot.sendMessage(chat_id, str('Moving Forward'))
         move_msg.linear.x = 0.3
         move_msg.angular.z = 0
-        for i in range(5):
+        for i in range(10):
             pub.publish(move_msg)
             r.sleep()
 
@@ -52,8 +52,9 @@ def handle(msg):
         bot.sendMessage(chat_id, str('Moving Backward'))
         move_msg.linear.x = -0.3
         move_msg.angular.z = 0
-        pub.publish(move_msg)
-
+        for i in range(10):
+            pub.publish(move_msg)
+            r.sleep()
     elif command == '/right':
         bot.sendMessage(chat_id, str('Turning Right'))
         move_msg.linear.x = 0
@@ -70,19 +71,21 @@ def handle(msg):
         bot.sendMessage(chat_id, 'Clicking a picture')
         click.take_picture('work_photo.jpg')
         bot.sendPhoto(chat_id,  open(
-            '/home/manasrr/catkin_ws_lab/src/survil_bot_pkg/turtleBot_photos/work_photo.jpg', 'rb'))
+            '/home/manasrr/catkin_ws_lab/src/survil_bot_pkg/turtleBot_photos/work_photo.jpg', 'rb'), caption='Photo @' + str(now.hour) +
+            str(":") + str(now.minute) + str(":") + str(now.second)+'-'+str(now.day) +
+            str("/") + str(now.month) + str("/") + str(now.year))
 
-    elif 'goto' in command:
-        extract = command.split(' ')
-        ka = float(extract[1])
-        kx = float(extract[2])
-        x = float(extract[3])
-        y = float(extract[4])
-        controller_values = [ka, kx, x, y]
-        controller_pub.publish(controller_values)
+    # elif 'goto' in command:
+    #     extract = command.split(' ')
+    #     ka = float(extract[1])
+    #     kx = float(extract[2])
+    #     x = float(extract[3])
+    #     y = float(extract[4])
+    #     controller_values = [ka, kx, x, y]
+    #     controller_pub.publish(controller_values)
 
-        print("extracted part is ", extract)
-        bot.sendMessage(chat_id, str('Moving to set location'))
+        # print("extracted part is ", extract)
+        # bot.sendMessage(chat_id, str('Moving to set location'))
 
     else:
         bot.sendMessage(chat_id, str('Sorry I did not understand the command'))

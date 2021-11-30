@@ -93,7 +93,7 @@ class Proportional:
         self.controlPub.publish(new_msg)
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 
-#     #     p = Proportional(0.75, 0.3, 2, 2)
-#     rospy.spin()
+    p = Proportional(0.75, 0.3, 2, 2)
+    rospy.spin()
