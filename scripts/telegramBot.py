@@ -12,16 +12,16 @@ from telegramBotCapture import TakePhoto
 
 from std_msgs.msg import Float32MultiArray
 
-now = datetime.datetime.now()  # Getting date and time
+# now = datetime.datetime.now()
 pub = rospy.Publisher('/cmd_vel_mux/input/teleop', Twist, queue_size=1)
 
 # controller_pub = rospy.Publisher(
 #     '/controller_values', Float32MultiArray, queue_size=1)
-# rospy.init_node('survilBot', anonymous=True)
+rospy.init_node('survilBot', anonymous=True)
 move_msg = Twist()
 click = TakePhoto()
 
-r = rospy.Rate(10)
+r = rospy.Rate(5)
 
 
 def handle(msg):
@@ -35,14 +35,17 @@ def handle(msg):
     if command == '/hi':
         bot.sendMessage(chat_id, str("Hi! Mechx Student"))
     elif command == '/time':
+        now = datetime.datetime.now()
         bot.sendMessage(chat_id, str("Time: ") + str(now.hour) +
                         str(":") + str(now.minute) + str(":") + str(now.second))
     elif command == '/date':
+        now = datetime.datetime.now()
         bot.sendMessage(chat_id, str("Date: ") + str(now.day) +
                         str("/") + str(now.month) + str("/") + str(now.year))
+
     elif command == '/forward':
         bot.sendMessage(chat_id, str('Moving Forward'))
-        move_msg.linear.x = 0.3
+        move_msg.linear.x = 0.5
         move_msg.angular.z = 0
         for i in range(10):
             pub.publish(move_msg)
@@ -50,7 +53,7 @@ def handle(msg):
 
     elif command == '/backward':
         bot.sendMessage(chat_id, str('Moving Backward'))
-        move_msg.linear.x = -0.3
+        move_msg.linear.x = -0.5
         move_msg.angular.z = 0
         for i in range(10):
             pub.publish(move_msg)
@@ -70,10 +73,15 @@ def handle(msg):
     elif command == '/photo':
         bot.sendMessage(chat_id, 'Clicking a picture')
         click.take_picture('work_photo.jpg')
+        now = datetime.datetime.now()
         bot.sendPhoto(chat_id,  open(
             '/home/manasrr/catkin_ws_lab/src/survil_bot_pkg/turtleBot_photos/work_photo.jpg', 'rb'), caption='Photo @' + str(now.hour) +
-            str(":") + str(now.minute) + str(":") + str(now.second)+'-'+str(now.day) +
+            str(":") + str(now.minute) + str(":") + str(now.second)+'_'+str(now.day) +
             str("/") + str(now.month) + str("/") + str(now.year))
+
+    elif command == '/help':
+        bot.sendMessage(chat_id, str(
+            "You can do the following commands:\n /forward -to move forward by 1m\n /backward -to move forward by 1m\n /left -to turn left\n /right -to turn right\n /photo -to click and send a picture\n /date -for current date\n /time -for current time"))
 
     # elif 'goto' in command:
     #     extract = command.split(' ')
