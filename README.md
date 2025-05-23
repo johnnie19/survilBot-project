@@ -43,10 +43,8 @@ This project aims to develop a surveillance robot (`survilBot`) that combines:
 4. **Run the Launch File**:
 
    ```bash
-   roslaunch launch/your_launch_file.launch
+   roslaunch launch/turtleBotControl.launch
    ```
-
-*Replace `your_launch_file.launch` with the appropriate launch file name.*
 
 ## 📸 Features
 
